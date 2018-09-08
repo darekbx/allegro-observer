@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:allegro_observer/allegro/model/category_wrapper.dart';
+import 'package:allegro_observer/allegro/model/category.dart';
 
 import 'dart:developer';
 
@@ -17,7 +18,6 @@ class AllegroCategories {
     var address = API_URL + CATEGORIES_ENDPOINT + parentId;
     var headers =  { "Accept": "application/vnd.allegro.public.v1+json" };
     var response = await http.get(address, headers: headers);
-    print(response.body);
     if (response.statusCode == HttpStatus.ok) {
       var jsonMap = json.decode(response.body);
       return CategoryWrapper.fromJson(jsonMap);
