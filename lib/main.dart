@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:allegro_observer/FiltersPage.dart';
+import 'package:allegro_observer/filters_page.dart';
 
 void main() => runApp(new AllegroObserverApp());
 

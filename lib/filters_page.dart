@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:allegro_observer/CreateFilterPage.dart';
+import 'package:allegro_observer/create_filter_page.dart';
 
 class FiltersPage extends StatefulWidget {
   FiltersPage({Key key, this.title}) : super(key: key);

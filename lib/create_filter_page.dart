@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:allegro_observer/category_choose_page.dart';
 
 class CreateFilterPage extends StatefulWidget {
   CreateFilterPage({Key key}) : super(key: key);
@@ -42,6 +43,7 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
           _createCategoryInput(),
           _createPriceInput(),
           _createIsUsedCheckbox(),
+          _createCategoriesButton(),
           Expanded(child: Container()),
           _createSaveButton()
         ],
@@ -49,7 +51,7 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
     );
   }
 
-  Widget _applyInputStyle(Widget input) {
+  Widget _applyInputStyle(Widget input, {double radius = 8.0, double borderRadius = 4.0}) {
     return Container(
       decoration: BoxDecoration(
           shape: BoxShape.rectangle,
@@ -59,10 +61,10 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
             blurRadius: 2.0,
           )
           ],
-          borderRadius: BorderRadius.all(Radius.circular(8.0))
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius))
       ),
       child: Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(radius),
           child: input
       ),
     );
@@ -137,7 +139,7 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Flexible(
+          Expanded(
               child: Row(
                   children: <Widget>[
                     Checkbox(
@@ -173,6 +175,26 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
         ]);
   }
 
+  Widget _createCategoriesButton() {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Padding(
+                  padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
+                  child: FlatButton(
+                    child: Text(
+                        "Choose category",
+                        style: TextStyle(color: Colors.white)),
+                    color: Colors.orange,
+                    onPressed: () {
+                      _openCategoriesPage(context);
+                    },
+                  )
+              )
+
+        ]);
+  }
+
   Widget _createSaveButton() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -192,6 +214,13 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
               )
           )
         ]);
+  }
+
+  void _openCategoriesPage(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CategoryChoosePage())
+    );
   }
 
   void _saveFilter() {
