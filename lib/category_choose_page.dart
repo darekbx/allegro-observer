@@ -4,9 +4,11 @@ import 'package:allegro_observer/allegro/model/category_wrapper.dart';
 import 'package:allegro_observer/allegro/model/category.dart';
 
 class CategoryChoosePage extends StatefulWidget {
-  CategoryChoosePage({Key key, this.openedCategory = null}) :super(key: key);
+  CategoryChoosePage({Key key, this.openedCategory = null, this.index = 0})
+      :super(key: key);
 
   final Category openedCategory;
+  final int index;
 
   @override
   State<StatefulWidget> createState() => _CategoryChooseState();
@@ -24,23 +26,28 @@ class _CategoryChooseState extends State<CategoryChoosePage> {
             future: _buildCategoryFuture(),
             builder: (BuildContext context,
                 AsyncSnapshot<CategoryWrapper> snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  return _buildLoadingView();
-                default:
-                  if (snapshot.hasError) {
-                    return _buildError(snapshot.error);
-                  } else {
-                    if (snapshot.data == null) {
-                      return _buildError("Error :( ");
-                    } else {
-                      return _buildListView(context, snapshot);
-                    }
-                  }
-              }
+              return _handleFuture(context, snapshot);
             })
     );
+  }
+
+  Widget _handleFuture(BuildContext context,
+      AsyncSnapshot<CategoryWrapper> snapshot) {
+    switch (snapshot.connectionState) {
+      case ConnectionState.none:
+      case ConnectionState.waiting:
+        return _buildLoadingView();
+      default:
+        if (snapshot.hasError) {
+          return _buildError(snapshot.error);
+        } else {
+          if (snapshot.data == null) {
+            return _buildError("Error :( ");
+          } else {
+            return _buildListView(context, snapshot);
+          }
+        }
+    }
   }
 
   _buildTitle() {
@@ -81,12 +88,7 @@ class _CategoryChooseState extends State<CategoryChoosePage> {
           return Column(
             children: <Widget>[
               ListTile(
-                  title: GestureDetector(
-                    child: _buildListItem(wrapper.categories[index]),
-                    onTap: () {
-                      _openCategoryPage(context, wrapper.categories[index]);
-                    },
-                  )
+                title: _buildListItem(context, wrapper.categories[index]),
               ),
               Divider(height: 2.0),
             ],
@@ -95,29 +97,39 @@ class _CategoryChooseState extends State<CategoryChoosePage> {
     );
   }
 
-  void _openCategoryPage(BuildContext context, Category category) {
-    if (category.leaf) {
-
-
-
+  void _openCategoryPage(BuildContext context, Category category,
+      {bool forceLeaf = false}) {
+    if (category.leaf || forceLeaf) {
+      for (var i = 0; i <= widget.index; i++) {
+        Navigator.pop(context, category);
+      }
     }
     else {
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) =>
-              CategoryChoosePage(openedCategory: category))
+              CategoryChoosePage(
+                  openedCategory: category, index: widget.index + 1))
       );
     }
   }
 
-  _buildListItem(Category category) {
+  _buildListItem(BuildContext context, Category category) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Expanded(
-          child: Text(category.name),
+            child: GestureDetector(
+                child: Text(category.name),
+                onTap: () {
+                  _openCategoryPage(context, category);
+                })
         ),
-        _buildLeafIcon(category)
+        GestureDetector(
+            child: _buildLeafIcon(category),
+            onTap: () {
+              _openCategoryPage(context, category, forceLeaf: true);
+            })
       ],
     );
   }

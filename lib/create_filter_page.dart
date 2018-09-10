@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:allegro_observer/category_choose_page.dart';
+import 'package:allegro_observer/allegro/model/category.dart';
 
 class CreateFilterPage extends StatefulWidget {
   CreateFilterPage({Key key}) : super(key: key);
@@ -16,6 +16,9 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
   final priceToController = TextEditingController();
   bool _isUsedState = true;
   bool _isNewState = true;
+
+  Category _selectedCategory = null;
+  String _chooseCategoryLabel = "Choose category";
 
   BuildContext _scaffoldContext;
 
@@ -183,7 +186,7 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
                   padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
                   child: FlatButton(
                     child: Text(
-                        "Choose category",
+                        _chooseCategoryLabel,
                         style: TextStyle(color: Colors.white)),
                     color: Colors.orange,
                     onPressed: () {
@@ -216,11 +219,14 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
         ]);
   }
 
-  void _openCategoriesPage(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => CategoryChoosePage())
-    );
+  void _openCategoriesPage(BuildContext context) async {
+    final result = await Navigator.pushNamed(context, '/category_choose');
+    if (result is Category) {
+      _selectedCategory = result;
+      setState(() {
+        _chooseCategoryLabel = "Category: " + result.name;
+      });
+    }
   }
 
   void _saveFilter() {

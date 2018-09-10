@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:allegro_observer/create_filter_page.dart';
 
 class FiltersPage extends StatefulWidget {
-  FiltersPage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  FiltersPage({Key key}) : super(key: key);
 
   @override
   _FiltersPageState createState() => _FiltersPageState();
@@ -13,17 +10,14 @@ class FiltersPage extends StatefulWidget {
 class _FiltersPageState extends State<FiltersPage> {
 
   void _openCreateFilter(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => CreateFilterPage())
-    );
+    Navigator.pushNamed(context, '/create_filter');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Allegro Observer"),
       ),
       body: Center(
         child: Column(
