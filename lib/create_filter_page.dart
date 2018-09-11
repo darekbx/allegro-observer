@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:allegro_observer/model/filter.dart';
 import 'package:allegro_observer/allegro/model/category.dart';
 
 class CreateFilterPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
   String _chooseCategoryLabel = "Choose category";
 
   BuildContext _scaffoldContext;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,30 +33,34 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
       body: Builder(
           builder: (BuildContext context) {
             _scaffoldContext = context;
-            return _body();
+            return _body(context);
           }
       ),
     );
   }
 
-  Widget _body() {
+  Widget _body(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          _createNameInput(),
-          _createCategoryInput(),
-          _createPriceInput(),
-          _createIsUsedCheckbox(),
-          _createCategoriesButton(),
-          Expanded(child: Container()),
-          _createSaveButton()
-        ],
+      child:
+      Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            _createNameInput(),
+            _createPriceInput(),
+            _createIsUsedCheckbox(),
+            _createCategoriesButton(),
+            Expanded(child: Container()),
+            _createSaveButton(context)
+          ],
+        ),
       ),
     );
   }
 
-  Widget _applyInputStyle(Widget input, {double radius = 8.0, double borderRadius = 4.0}) {
+  Widget _applyInputStyle(Widget input,
+      {double radius = 8.0, double borderRadius = 4.0}) {
     return Container(
       decoration: BoxDecoration(
           shape: BoxShape.rectangle,
@@ -77,23 +83,15 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
     return Padding(
         padding: EdgeInsets.all(16.0),
         child: _applyInputStyle(
-            TextField(
+            TextFormField(
               controller: nameTextController,
+              validator: (value) {
+                if (value.length > 100) {
+                  return "Keyword is too long";
+                }
+              },
               decoration: InputDecoration.collapsed(
-                hintText: "Filter name",
-              ),
-            )
-        ));
-  }
-
-  Widget _createCategoryInput() {
-    return Padding(
-        padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-        child: _applyInputStyle(
-            TextField(
-              controller: categoryTextController,
-              decoration: InputDecoration.collapsed(
-                hintText: "Category",
+                hintText: "Keyword",
               ),
             )
         ));
@@ -108,8 +106,14 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
             Padding(
                 padding: EdgeInsets.fromLTRB(16.0, 0.0, 8.0, 0.0),
                 child: _applyInputStyle(
-                    TextField(
+                    TextFormField(
                       controller: priceFromController,
+                      validator: (value) {
+                        double price = double.tryParse(value);
+                        if (price != null && price < 0) {
+                          return "Value is invalid";
+                        }
+                      },
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration.collapsed(
                           hintText: "Price from"
@@ -124,8 +128,20 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
             Padding(
                 padding: EdgeInsets.fromLTRB(0.0, 0.0, 16.0, 0.0),
                 child: _applyInputStyle(
-                    TextField(
+                    TextFormField(
                       controller: priceToController,
+                      validator: (value) {
+                        double priceTo = double.tryParse(value);
+                        double priceFrom = double.tryParse(
+                            priceFromController.text);
+                        if (priceTo != null) {
+                          if (priceTo < 0) {
+                            return "Value is invalid";
+                          } else if (priceFrom != null && priceFrom > priceTo) {
+                            return "Price to is to small";
+                          }
+                        }
+                      },
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration.collapsed(
                           hintText: "Price to"
@@ -182,9 +198,11 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Padding(
+          Expanded(
+              child:
+              Padding(
                   padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
-                  child: FlatButton(
+                  child: RaisedButton(
                     child: Text(
                         _chooseCategoryLabel,
                         style: TextStyle(color: Colors.white)),
@@ -194,24 +212,24 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
                     },
                   )
               )
-
+          )
         ]);
   }
 
-  Widget _createSaveButton() {
+  Widget _createSaveButton(BuildContext context) {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Expanded(
               child: Padding(
                   padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
-                  child: FlatButton(
+                  child: RaisedButton(
                     child: Text(
                         "Save",
                         style: TextStyle(color: Colors.white)),
                     color: Colors.green,
                     onPressed: () {
-                      _saveFilter();
+                      _saveFilter(context);
                     },
                   )
               )
@@ -229,12 +247,27 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
     }
   }
 
-  void _saveFilter() {
-    var text = nameTextController.text
-        + ", " + priceFromController.text
-        + ", " + priceToController.text
-        + ", " + (_isUsedState ? "Used" : "New");
-    Scaffold.of(_scaffoldContext).showSnackBar(SnackBar(content: Text(text)));
+  void _saveFilter(BuildContext context) {
+    if (_formKey.currentState.validate()) {
+      if (_selectedCategory == null) {
+        _showMessage("Please select category");
+        return;
+      }
+      var filter = Filter(
+          nameTextController.text,
+          double.tryParse(priceFromController.text),
+          double.tryParse(priceToController.text),
+          _isUsedState,
+          _isNewState,
+          _selectedCategory);
+
+      Navigator.pop(context, filter);
+    }
+  }
+
+  void _showMessage(String message) {
+    Scaffold.of(_scaffoldContext).showSnackBar(
+        SnackBar(content: Text(message)));
   }
 
   @override

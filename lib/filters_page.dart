@@ -9,8 +9,13 @@ class FiltersPage extends StatefulWidget {
 
 class _FiltersPageState extends State<FiltersPage> {
 
-  void _openCreateFilter(BuildContext context) {
-    Navigator.pushNamed(context, '/create_filter');
+  void _openCreateFilter(BuildContext context) async {
+    var filter = await Navigator.pushNamed(context, '/create_filter');
+    if (filter != null) {
+
+
+
+    }
   }
 
   @override
