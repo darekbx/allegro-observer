@@ -1,6 +1,7 @@
 import 'package:allegro_observer/allegro/model/category.dart';
 
 class Filter {
+  String id;
   final String name;
   final double priceFrom;
   final double priceTo;
@@ -8,8 +9,8 @@ class Filter {
   final bool searchNew;
   final Category category;
 
-  Filter(this.name, this.priceFrom, this.priceTo, this.searchUsed,
-      this.searchNew, this.category);
+  Filter({this.id, this.name, this.priceFrom, this.priceTo, this.searchUsed,
+      this.searchNew, this.category});
 
   @override
   String toString() {

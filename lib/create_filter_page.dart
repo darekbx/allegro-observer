@@ -254,12 +254,12 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
         return;
       }
       var filter = Filter(
-          nameTextController.text,
-          double.tryParse(priceFromController.text),
-          double.tryParse(priceToController.text),
-          _isUsedState,
-          _isNewState,
-          _selectedCategory);
+          name: nameTextController.text,
+          priceFrom: double.tryParse(priceFromController.text),
+          priceTo: double.tryParse(priceToController.text),
+          searchUsed: _isUsedState,
+          searchNew: _isNewState,
+          category: _selectedCategory);
 
       Navigator.pop(context, filter);
     }
