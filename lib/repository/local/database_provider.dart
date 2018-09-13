@@ -1,25 +1,44 @@
 import 'dart:async';
+import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:allegro_observer/model/filter.dart';
 
 class DatabaseProvider {
 
-  final version = 1;
-  Database db;
+  final _filterTableName = "filter";
+  final _itemTableName = "item";
+  final _version = 1;
+  Database _db;
 
-  Future open(String path) async {
-    db = await openDatabase(
+  Future open(String dbName) async {
+    var databasesPath = await getDatabasesPath();
+    String path = join(databasesPath, dbName);
+    _db = await openDatabase(
         path,
-        version: version,
+        version: _version,
         onCreate: (Database db, int version) {
           _executeCreateTables(db);
         });
   }
 
-  Future close() async => db.close();
+  Future close() async => _db.close();
+
+  Future<int> addFilter(Filter filter) async {
+    var id = await _db.insert(_filterTableName, filter.toMap());
+    return id;
+  }
+
+  Future<List<Filter>> fetchFilters() async {
+    List<Map> maps = await _db.query(_filterTableName);
+    if (maps.length > 0) {
+      return maps.map((map) => Filter.fromMap(map)).toList();
+    }
+    return null;
+  }
 
   _executeCreateTables(Database db) async {
     await db.execute('''
-      CREATE TABLE filter (
+      CREATE TABLE $_filterTableName (
         _id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NULL,
         priceFrom DOUBLE NULL,
@@ -31,7 +50,7 @@ class DatabaseProvider {
       )
       ''');
     await db.execute('''
-      CREATE TABLE item (
+      CREATE TABLE $_itemTableName (
         _id INTEGER PRIMARY KEY AUTOINCREMENT,
         allegroId TEXT NULL,
         name TEXT NULL,

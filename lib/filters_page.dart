@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:allegro_observer/repository/repository.dart';
 
 class FiltersPage extends StatefulWidget {
   FiltersPage({Key key}) : super(key: key);
@@ -10,11 +11,22 @@ class FiltersPage extends StatefulWidget {
 class _FiltersPageState extends State<FiltersPage> {
 
   void _openCreateFilter(BuildContext context) async {
+
     var filter = await Navigator.pushNamed(context, '/create_filter');
     if (filter != null) {
 
+      var repository = Repository();
+      await repository.open();
 
+      var id = await repository.addFilter(filter);
 
+      print("New filter $id");
+
+      var list = await repository.fetchFilters();
+
+      print(list);
+
+      await repository.close();
     }
   }
 
