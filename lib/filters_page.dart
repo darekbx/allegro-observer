@@ -24,7 +24,7 @@ class _FiltersPageState extends State<FiltersPage> {
 
       var list = await repository.fetchFilters();
 
-      print(list);
+      list.forEach((f) => print(f));
 
       await repository.close();
     }
