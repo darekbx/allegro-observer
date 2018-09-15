@@ -8,7 +8,7 @@ void main() {
   test('Add filter and list', () async {
     // Given
     var category = Category("50", "Part", false);
-    var filter = Filter(name: "Kcnc",
+    var filter = Filter(keyword: "Kcnc",
         priceFrom: null,
         priceTo: 100.0,
         searchUsed: true,

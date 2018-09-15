@@ -11,7 +11,7 @@ class CreateFilterPage extends StatefulWidget {
 
 class _CreateFilterPageState extends State<CreateFilterPage> {
 
-  final nameTextController = TextEditingController();
+  final keywordTextController = TextEditingController();
   final categoryTextController = TextEditingController();
   final priceFromController = TextEditingController();
   final priceToController = TextEditingController();
@@ -47,7 +47,7 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            _createNameInput(),
+            _createKeywordInput(),
             _createPriceInput(),
             _createIsUsedCheckbox(),
             _createCategoriesButton(),
@@ -79,12 +79,12 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
     );
   }
 
-  Widget _createNameInput() {
+  Widget _createKeywordInput() {
     return Padding(
         padding: EdgeInsets.all(16.0),
         child: _applyInputStyle(
             TextFormField(
-              controller: nameTextController,
+              controller: keywordTextController,
               validator: (value) {
                 if (value.length > 100) {
                   return "Keyword is too long";
@@ -254,7 +254,7 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
         return;
       }
       var filter = Filter(
-          name: nameTextController.text,
+          keyword: keywordTextController.text,
           priceFrom: double.tryParse(priceFromController.text),
           priceTo: double.tryParse(priceToController.text),
           searchUsed: _isUsedState,
@@ -272,7 +272,7 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
 
   @override
   void dispose() {
-    nameTextController.dispose();
+    keywordTextController.dispose();
     super.dispose();
   }
 }

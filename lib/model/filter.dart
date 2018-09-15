@@ -3,19 +3,19 @@ import 'package:allegro_observer/allegro/model/category.dart';
 class Filter {
 
   String id;
-  String name;
+  String keyword;
   double priceFrom;
   double priceTo;
   bool searchUsed;
   bool searchNew;
   Category category;
 
-  Filter({this.id, this.name, this.priceFrom, this.priceTo, this.searchUsed,
+  Filter({this.id, this.keyword, this.priceFrom, this.priceTo, this.searchUsed,
       this.searchNew, this.category});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      "name": name,
+      "keyword": keyword,
       "priceFrom": priceFrom,
       "priceTo": priceTo,
       "searchUsed": _mapToInt(searchUsed),
@@ -27,7 +27,7 @@ class Filter {
 
   Filter.fromMap(Map<String, dynamic> map) {
     id = map["id"];
-    name = map["name"];
+    keyword = map["keyword"];
     priceFrom = map["priceFrom"];
     priceTo = map["priceTo"];
     searchUsed = map["searchUsed"] == 1;
@@ -37,9 +37,15 @@ class Filter {
 
   int _mapToInt(bool value) => value == true ? 1 : 0;
 
+  bool hasKeyword() => keyword != null && !keyword.isEmpty;
+  bool hasPriceFrom() => priceFrom != null && priceFrom > 0.0;
+  bool hasPriceTo() => priceTo != null && priceTo > 0.0;
+  int priceFromInt() => priceFrom.toInt();
+  int priceToInt() => priceTo.toInt();
+
   @override
   String toString() {
-    return this.name +
+    return this.keyword +
         ", " + this.priceFrom.toString() +
         ", " + this.priceTo.toString() +
         ", " + (this.searchUsed ? "Used" : "") +

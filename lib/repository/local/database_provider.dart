@@ -40,7 +40,7 @@ class DatabaseProvider {
     await db.execute('''
       CREATE TABLE $_filterTableName (
         _id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NULL,
+        keyword TEXT NULL,
         priceFrom DOUBLE NULL,
         priceTo DOUBLE NULL,
         searchUsed INTEGER DEFAULT 0,
