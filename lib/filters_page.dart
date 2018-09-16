@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:allegro_observer/repository/repository.dart';
 import 'package:allegro_observer/model/filter.dart';
+import 'package:allegro_observer/counter_widget.dart';
 
 class FiltersPage extends StatefulWidget {
   FiltersPage({Key key}) : super(key: key);
@@ -15,6 +16,8 @@ class _FiltersPageState extends State<FiltersPage> {
   final mediumScale = 0.8;
   final smallScale = 0.7;
 
+  List<Filter> _filters;
+
   void _openCreateFilter(BuildContext context) async {
     var filter = await Navigator.pushNamed(context, '/create_filter');
     if (filter != null) {
@@ -22,7 +25,14 @@ class _FiltersPageState extends State<FiltersPage> {
       await repository.open();
       await repository.addFilter(filter);
       await repository.close();
+      _refreshList();
     }
+  }
+
+  void _refreshList() {
+    setState(() {
+      _filters.clear();
+    });
   }
 
   @override
@@ -65,13 +75,13 @@ class _FiltersPageState extends State<FiltersPage> {
         if (snapshot.data == null || snapshot.data.isEmpty) {
           return _buildEmptyView();
         } else {
+          this._filters = snapshot.data;
           return _buildFiltersList(context, snapshot.data);
         }
     }
   }
 
-  Widget _buildFiltersList(BuildContext context,
-      List<Filter> filters) {
+  Widget _buildFiltersList(BuildContext context, List<Filter> filters) {
     return ListView.builder(
       itemCount: filters.length,
       itemBuilder: (BuildContext context, int index) {
@@ -102,7 +112,7 @@ class _FiltersPageState extends State<FiltersPage> {
                     ),
                     Padding(padding: EdgeInsets.all(2.0)),
                     _buildKeyword(filter),
-                    _buildUsedNew(filter)
+                    _buildCheckboxes(filter)
                   ],
                 ),
                 Row(
@@ -120,21 +130,7 @@ class _FiltersPageState extends State<FiltersPage> {
   }
 
   Widget _buildCounter(Filter filter) {
-    return Container(
-      child: Text(
-          "5",
-          textScaleFactor: mediumScale,
-          style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold
-          )
-      ),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          color: Colors.blue
-      ),
-      padding: EdgeInsets.all(4.0),
-    );
+    return CounterWidget(filter);
   }
 
   Widget _buildKeyword(Filter filter) {
@@ -170,14 +166,23 @@ class _FiltersPageState extends State<FiltersPage> {
     return Text(value, textScaleFactor: smallScale);
   }
 
-  Widget _buildUsedNew(Filter filter) {
-    if (filter.searchNew && filter.searchUsed) {
-      return Container();
-    }
+  Widget _buildCheckboxes(Filter filter) {
     String text = filter.searchUsed
-        ? "(Used)"
-        : "(New)";
-    return Text(text, textScaleFactor: mediumScale);
+        ? "(Used"
+        : "(New";
+    print(filter);
+    if (filter.searchNew && filter.searchUsed) {
+      if (filter.searchInDescription) {
+        text = "(In description";
+      }
+      else {
+        return Container();
+      }
+    }
+    if (filter.searchInDescription) {
+      text += ", In description";
+    }
+    return Text("$text)", textScaleFactor: mediumScale);
   }
 
   Widget _buildLoadingView() {

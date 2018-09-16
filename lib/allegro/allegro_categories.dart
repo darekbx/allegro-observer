@@ -3,13 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:allegro_observer/allegro/model/category_wrapper.dart';
-import 'package:allegro_observer/allegro/model/category.dart';
-
-import 'dart:developer';
+import 'allegro_base.dart';
 
 class AllegroCategories {
-  final String CATEGORY_PARENT_ID = "954b95b6-43cf-4104-8354-dea4d9b10ddf";
-  final String API_URL = "https://api.allegro.pl";
   final String CATEGORIES_ENDPOINT = "/categories?parent.id=";
 
   Future<CategoryWrapper> getMainCategories() async => getCategories(CATEGORY_PARENT_ID);

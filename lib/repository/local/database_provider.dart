@@ -43,6 +43,7 @@ class DatabaseProvider {
         keyword TEXT NULL,
         priceFrom DOUBLE NULL,
         priceTo DOUBLE NULL,
+        searchInDescription INTEGER DEFAULT 0,
         searchUsed INTEGER DEFAULT 0,
         searchNew INTEGER DEFAULT 1,
         categoryName TEXT NOT NULL,

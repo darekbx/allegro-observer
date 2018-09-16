@@ -6,18 +6,22 @@ class Filter {
   String keyword;
   double priceFrom;
   double priceTo;
+  bool searchInDescription;
   bool searchUsed;
   bool searchNew;
   Category category;
 
-  Filter({this.id, this.keyword, this.priceFrom, this.priceTo, this.searchUsed,
-      this.searchNew, this.category});
+  int count = null;
+
+  Filter({this.id, this.keyword, this.priceFrom, this.priceTo,
+    this.searchInDescription, this.searchUsed, this.searchNew, this.category});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       "keyword": keyword,
       "priceFrom": priceFrom,
       "priceTo": priceTo,
+      "searchInDescription": _mapToInt(searchInDescription),
       "searchUsed": _mapToInt(searchUsed),
       "searchNew": _mapToInt(searchNew),
       "categoryName": category.name,
@@ -30,6 +34,7 @@ class Filter {
     keyword = map["keyword"];
     priceFrom = map["priceFrom"];
     priceTo = map["priceTo"];
+    searchInDescription = map["searchInDescription"] == 1;
     searchUsed = map["searchUsed"] == 1;
     searchNew = map["searchNew"] == 1;
     category = Category(map["categoryId"], map["categoryName"], false);
@@ -48,6 +53,7 @@ class Filter {
     return this.keyword +
         ", " + this.priceFrom.toString() +
         ", " + this.priceTo.toString() +
+        ", " + (this.searchInDescription ? "In description" : "") +
         ", " + (this.searchUsed ? "Used" : "") +
         ", " + (this.searchNew ? "Used" : "") +
         ", " + this.category.name;

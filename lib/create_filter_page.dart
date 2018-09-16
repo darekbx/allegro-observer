@@ -15,6 +15,7 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
   final categoryTextController = TextEditingController();
   final priceFromController = TextEditingController();
   final priceToController = TextEditingController();
+  bool _inDescriptionState = false;
   bool _isUsedState = true;
   bool _isNewState = true;
 
@@ -50,6 +51,7 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
             _createKeywordInput(),
             _createPriceInput(),
             _createIsUsedCheckbox(),
+            _createInDescriptionCheckbox(),
             _createCategoriesButton(),
             Expanded(child: Container()),
             _createSaveButton(context)
@@ -194,6 +196,21 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
         ]);
   }
 
+  Widget _createInDescriptionCheckbox() {
+    return Row(
+        children: <Widget>[
+          Checkbox(
+            value: _inDescriptionState,
+            onChanged: (value) {
+              setState(() {
+                _inDescriptionState = value;
+              });
+            },
+          ), Text("Search in description")
+        ]
+    );
+  }
+
   Widget _createCategoriesButton() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -257,6 +274,7 @@ class _CreateFilterPageState extends State<CreateFilterPage> {
           keyword: keywordTextController.text,
           priceFrom: double.tryParse(priceFromController.text),
           priceTo: double.tryParse(priceToController.text),
+          searchInDescription: _inDescriptionState,
           searchUsed: _isUsedState,
           searchNew: _isNewState,
           category: _selectedCategory);
