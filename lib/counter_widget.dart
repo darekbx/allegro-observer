@@ -25,7 +25,7 @@ class _CounterWidgetState extends State<CounterWidget> {
 
   _update() async {
     var result = 0;
-    await Future.delayed(Duration(milliseconds: Random().nextInt(1000) + 1000));
+    await Future.delayed(Duration(milliseconds: Random().nextInt(900) + 1000));
     setState(() {
       widget.filter.count = result;
     });

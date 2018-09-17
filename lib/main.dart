@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:allegro_observer/filters_page.dart';
 import 'package:allegro_observer/create_filter_page.dart';
 import 'package:allegro_observer/category_choose_page.dart';
+import 'package:allegro_observer/webview_page.dart';
 
 void main() => runApp(new AllegroObserverApp());
 
@@ -18,7 +19,8 @@ class AllegroObserverApp extends StatelessWidget {
       routes: {
         '/': (context) => FiltersPage(),
         '/create_filter': (context) => CreateFilterPage(),
-        '/category_choose': (context) => CategoryChoosePage()
+        '/category_choose': (context) => CategoryChoosePage(),
+        '/web_view': (context) => WebViewPage()
       },
     );
   }

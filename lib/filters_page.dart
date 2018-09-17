@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:allegro_observer/repository/repository.dart';
 import 'package:allegro_observer/model/filter.dart';
 import 'package:allegro_observer/counter_widget.dart';
+import 'allegro/token_storage.dart';
+import 'webview_page.dart';
+import 'allegro/authenticator.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class FiltersPage extends StatefulWidget {
   FiltersPage({Key key}) : super(key: key);
@@ -33,6 +37,34 @@ class _FiltersPageState extends State<FiltersPage> {
     setState(() {
       _filters.clear();
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    checkToken();
+  }
+
+  void checkToken() async {
+    if (await TokenStorage().hasToken() == false) {
+      var authenticator = Authenticator();
+
+      var flutterWebViewPlugin = FlutterWebviewPlugin();
+      flutterWebViewPlugin.onUrlChanged.listen((String url) {
+        var code = authenticator.extractCode(url);
+        if (code != null) {
+
+          print("Code: $code");
+        }
+      });
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>
+              WebViewPage(url: authenticator.getAuthUrl()))
+      );
+    }
   }
 
   @override
@@ -170,7 +202,6 @@ class _FiltersPageState extends State<FiltersPage> {
     String text = filter.searchUsed
         ? "(Used"
         : "(New";
-    print(filter);
     if (filter.searchNew && filter.searchUsed) {
       if (filter.searchInDescription) {
         text = "(In description";
