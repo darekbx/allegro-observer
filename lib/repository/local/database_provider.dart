@@ -21,7 +21,7 @@ class DatabaseProvider {
         });
   }
 
-  Future close() async => _db.close();
+  Future close() async => await _db.close();
 
   Future<int> addFilter(Filter filter) async {
     var id = await _db.insert(_filterTableName, filter.toMap());
