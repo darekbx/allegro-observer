@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:allegro_observer/repository/repository.dart';
 import 'package:allegro_observer/model/filter.dart';
+import 'package:allegro_observer/allegro/allegro_search.dart';
 
 class CounterWidget extends StatefulWidget {
   final Filter filter;
@@ -24,10 +25,12 @@ class _CounterWidgetState extends State<CounterWidget> {
   }
 
   _update() async {
-    var result = 0;
-    await Future.delayed(Duration(milliseconds: Random().nextInt(900) + 1000));
+
+    var allegroSearch = AllegroSearch();
+    var result = await allegroSearch.search(widget.filter);
+
     setState(() {
-      widget.filter.count = result;
+      widget.filter.count = result.items.regular.length + result.items.promoted.length;
     });
   }
 

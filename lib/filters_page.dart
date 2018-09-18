@@ -35,36 +35,10 @@ class _FiltersPageState extends State<FiltersPage> {
 
   void _refreshList() {
     setState(() {
-      _filters.clear();
+      if (_filters != null) {
+        _filters.clear();
+      }
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    checkToken();
-  }
-
-  void checkToken() async {
-    if (await TokenStorage().hasToken() == false) {
-      var authenticator = Authenticator();
-
-      var flutterWebViewPlugin = FlutterWebviewPlugin();
-      flutterWebViewPlugin.onUrlChanged.listen((String url) {
-        var code = authenticator.extractCode(url);
-        if (code != null) {
-
-          print("Code: $code");
-        }
-      });
-
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) =>
-              WebViewPage(url: authenticator.getAuthUrl()))
-      );
-    }
   }
 
   @override
