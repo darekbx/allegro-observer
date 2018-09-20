@@ -6,6 +6,7 @@ import 'package:allegro_observer/allegro/model/listing_wrapper.dart';
 import 'package:allegro_observer/allegro/allegro_base.dart';
 import 'package:allegro_observer/model/filter.dart';
 import 'package:allegro_observer/allegro/model/item.dart';
+import 'range.dart';
 
 class AllegroSearch {
   final String SEARCH_ENDPOINT = "/listing";
@@ -34,10 +35,44 @@ class AllegroSearch {
     }
   }
 
-  bool _isValidItem(Filter filter, Item item) {
+  bool isValidItem(Filter filter, Item item) {
 
-    // TODO: apply filter
+    if (!filter.searchUsed || !filter.searchNew) {
+      var state = item.parameters.firstWhere(
+              (parameter) => parameter.name == "Stan",
+          orElse: () => null);
 
-    return false;
+      if (state != null) {
+        if (filter.searchNew && state != "Nowy") {
+          return false;
+        }
+        if (filter.searchUsed && state != "Używany") {
+          return false;
+        }
+      }
+    }
+
+    if (filter.priceFrom != null || filter.priceTo != null) {
+      var from = filter.priceFrom ?? 0;
+      var to = filter.priceTo ?? double.minPositive;
+      var sellingMode = item.sellingMode;
+      var auction = sellingMode.auction == null ? sellingMode.auction.price : null;
+      var buyNow = sellingMode.buyNow == null ? sellingMode.buyNow.price : null;
+      var range = Range(from, to);
+
+      if (auction != null) {
+        if (!range.contains(double.parse(auction.amount))) {
+          return false;
+        }
+      }
+
+      if (buyNow != null) {
+        if (!range.contains(double.parse(buyNow.amount))) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 }
