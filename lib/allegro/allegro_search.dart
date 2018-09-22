@@ -26,8 +26,8 @@ class AllegroSearch {
       var jsonMap = json.decode(response.body);
       var wrapper =  ListingWrapper.fromJson(jsonMap);
 
-      wrapper.items.promoted.removeWhere((item) => _isValidItem(filter, item));
-      wrapper.items.regular.removeWhere((item) => _isValidItem(filter, item));
+      wrapper.items.promoted.removeWhere((item) => isValidItem(filter, item));
+      wrapper.items.regular.removeWhere((item) => isValidItem(filter, item));
 
       return wrapper;
     } else {
@@ -43,21 +43,22 @@ class AllegroSearch {
           orElse: () => null);
 
       if (state != null) {
-        if (filter.searchNew && state != "Nowy") {
+        var value = state.values.first;
+        if (filter.searchNew && value != "Nowy") {
           return false;
         }
-        if (filter.searchUsed && state != "Używany") {
+        if (filter.searchUsed && value != "Używany") {
           return false;
         }
       }
     }
 
     if (filter.priceFrom != null || filter.priceTo != null) {
-      var from = filter.priceFrom ?? 0;
+      var from = filter.priceFrom ?? 0.0;
       var to = filter.priceTo ?? double.minPositive;
       var sellingMode = item.sellingMode;
-      var auction = sellingMode.auction == null ? sellingMode.auction.price : null;
-      var buyNow = sellingMode.buyNow == null ? sellingMode.buyNow.price : null;
+      var auction = sellingMode.auction != null ? sellingMode.auction.price : null;
+      var buyNow = sellingMode.buyNow != null ? sellingMode.buyNow.price : null;
       var range = Range(from, to);
 
       if (auction != null) {
