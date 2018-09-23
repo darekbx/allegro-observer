@@ -1,12 +1,11 @@
-import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:allegro_observer/repository/repository.dart';
 import 'package:allegro_observer/model/filter.dart';
 import 'package:allegro_observer/allegro/allegro_search.dart';
 
 class CounterWidget extends StatefulWidget {
   final Filter filter;
+  int count = null;
+  bool isOverflow = false;
 
   CounterWidget(this.filter, {Key key}) : super(key: key);
 
@@ -30,21 +29,21 @@ class _CounterWidgetState extends State<CounterWidget> {
     var result = await allegroSearch.search(widget.filter);
 
     setState(() {
-      widget.filter.count = result.items.regular.length + result.items.promoted.length;
+      widget.count = result.items.regular.length + result.items.promoted.length;
+      widget.isOverflow = result.isOverflow();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var value = widget.filter.count;
-    if (value == null) {
+    if (widget.count == null) {
       return _buildLoadingView();
-    } else if (value == 0) {
+    } else if (widget.count == 0) {
       return Container();
     }
     return Container(
       child: Text(
-          "$value",
+          "${widget.count}",
           textScaleFactor: mediumScale,
           style: TextStyle(
               color: Colors.white,
@@ -53,7 +52,7 @@ class _CounterWidgetState extends State<CounterWidget> {
       ),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          color: Colors.blue
+          color: widget.isOverflow ? Colors.red : Colors.blue
       ),
       padding: EdgeInsets.all(4.0),
     );

@@ -1,4 +1,5 @@
 import 'package:allegro_observer/allegro/model/category.dart';
+import 'package:allegro_observer/allegro/allegro_base.dart';
 
 class Filter {
 
@@ -10,8 +11,6 @@ class Filter {
   bool searchUsed;
   bool searchNew;
   Category category;
-
-  int count = null;
 
   Filter({this.id, this.keyword, this.priceFrom, this.priceTo,
     this.searchInDescription, this.searchUsed, this.searchNew, this.category});
@@ -27,6 +26,13 @@ class Filter {
       "categoryName": category.name,
       "categoryId": category.id
     };
+  }
+
+  String priceQuery() {
+    if (searchNew && searchUsed) return "$NEW_KEY;$USED_KEY";
+    if (searchNew) return "$NEW_KEY";
+    if (searchUsed) return "$USED_KEY";
+    return "";
   }
 
   Filter.fromMap(Map<String, dynamic> map) {
