@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:allegro_observer/repository/repository.dart';
 import 'package:allegro_observer/model/filter.dart';
 import 'package:allegro_observer/counter_widget.dart';
-import 'allegro/token_storage.dart';
-import 'webview_page.dart';
-import 'allegro/authenticator.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:allegro_observer/items_page.dart';
 
 class FiltersPage extends StatefulWidget {
   FiltersPage({Key key}) : super(key: key);
@@ -104,35 +101,43 @@ class _FiltersPageState extends State<FiltersPage> {
   }
 
   Widget _buildListItem(BuildContext context, Filter filter) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
+    return GestureDetector(
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) =>
+                  ItemsPage(filter: filter))
+          );
+        },
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("[${filter.category.name}]",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                      textScaleFactor: mediumScale,
+                    Row(
+                      children: <Widget>[
+                        Text("[${filter.category.name}]",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textScaleFactor: mediumScale,
+                        ),
+                        Padding(padding: EdgeInsets.all(2.0)),
+                        _buildKeyword(filter),
+                        _buildCheckboxes(filter)
+                      ],
                     ),
-                    Padding(padding: EdgeInsets.all(2.0)),
-                    _buildKeyword(filter),
-                    _buildCheckboxes(filter)
-                  ],
-                ),
-                Row(
-                    children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.only(top: 2.0),
-                          child: _buildPrice(filter)
-                      )
-                    ]
-                )
-              ]
-          ),
-          _buildCounter(filter)
-        ]);
+                    Row(
+                        children: <Widget>[
+                          Padding(
+                              padding: EdgeInsets.only(top: 2.0),
+                              child: _buildPrice(filter)
+                          )
+                        ]
+                    )
+                  ]
+              ),
+              _buildCounter(filter)
+            ])
+    );
   }
 
   Widget _buildCounter(Filter filter) {

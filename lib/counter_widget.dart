@@ -24,7 +24,6 @@ class _CounterWidgetState extends State<CounterWidget> {
   }
 
   _update() async {
-
     var allegroSearch = AllegroSearch();
     var result = await allegroSearch.search(widget.filter);
 
