@@ -4,6 +4,7 @@ import 'package:allegro_observer/allegro/model/listing_wrapper.dart';
 import 'package:allegro_observer/allegro/model/items_wrapper.dart';
 import 'package:allegro_observer/allegro/model/item.dart';
 import 'package:allegro_observer/allegro/allegro_search.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ItemsPage extends StatefulWidget {
   ItemsPage({Key key, this.filter}) : super(key: key);
@@ -66,22 +67,59 @@ class _ItemsPageSate extends State<ItemsPage> {
   }
 
   _buildListItem(BuildContext context, Item item) {
-    return
-
-      GestureDetector(
-          onTap: () {
-
-          },
-          child: Column(
+    String image = "";
+    if (item.images != null && item.images.length > 0) {
+      image = item.images[0].url;
+    }
+    return GestureDetector(
+        onTap: () => _openUrl(item.url),
+        child:
+        Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                  child: Text("${item.name}", overflow: TextOverflow.ellipsis)
+                  child: Image.network(
+                      image,
+                      fit: BoxFit.cover,
+                      width: 80.0,
+                      height: 80.0
+                  )
               ),
-              Text("${item.id}", overflow: TextOverflow.ellipsis)
-            ],
-          )
-      );
+              Padding(padding: EdgeInsets.all(4.0)),
+              Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                          child: Text(
+                              "${item.name}",
+                              overflow: TextOverflow.ellipsis
+                          )
+                      ),
+                      Text(
+                          "${item.priceFormatted()}",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis
+                      ),
+                      Padding(padding: EdgeInsets.only(top: 38.0)),
+                      Text(
+                          "[${item.id}]",
+                          style: TextStyle(fontSize: 12.0))
+
+                    ],
+                  ))
+            ]
+        )
+    );
+  }
+
+  _openUrl(String url) async {
+
+    add page with progress and text "opening url", after wait complete, pop page
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
   }
 
   _buildLoadingView() {

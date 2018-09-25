@@ -36,4 +36,9 @@ class Price {
   Price.fromJson(Map<String, dynamic> json)
       : amount = json['amount'],
         currency = json['currency'];
+
+  @override
+  String toString() {
+    return "$amount $currency";
+  }
 }

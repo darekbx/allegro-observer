@@ -25,4 +25,13 @@ class Item {
             .map((item) => Parameter.fromJson(item))
             .toList(),
         sellingMode = SellingMode.fromJson(json['sellingMode']);
+
+  String priceFormatted() {
+    if (sellingMode.auction != null) {
+      return sellingMode.auction.price.toString();
+    }
+    else {
+      return sellingMode.buyNow.price.toString();
+    }
+  }
 }
