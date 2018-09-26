@@ -14,6 +14,13 @@ class Item {
   Item(this.id, this.name, this.url, this.images, this.parameters,
       this.sellingMode);
 
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      "allegroId": id,
+      "isNew": 1
+    };
+  }
+
   Item.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],

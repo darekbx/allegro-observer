@@ -4,7 +4,7 @@ import 'package:allegro_observer/allegro/model/listing_wrapper.dart';
 import 'package:allegro_observer/allegro/model/items_wrapper.dart';
 import 'package:allegro_observer/allegro/model/item.dart';
 import 'package:allegro_observer/allegro/allegro_search.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:allegro_observer/forward_page.dart';
 
 class ItemsPage extends StatefulWidget {
   ItemsPage({Key key, this.filter}) : super(key: key);
@@ -24,7 +24,7 @@ class _ItemsPageSate extends State<ItemsPage> {
         title: Text("Items"),
       ),
       body: FutureBuilder(
-          future: AllegroSearch().search(widget.filter),
+          future: AllegroSearch().search(widget.filter, onlyNew: true),
           builder: (BuildContext context,
               AsyncSnapshot<ListingWrapper> snapshot) {
             return _handleShapshot(context, snapshot);
@@ -40,7 +40,7 @@ class _ItemsPageSate extends State<ItemsPage> {
         return _buildLoadingView();
       default:
         if (snapshot.data == null) {
-          return _buildError("Error :(");
+          return _buildError("Error :( ?");
         } else {
           return _buildListView(context, snapshot.data.items);
         }
@@ -72,7 +72,11 @@ class _ItemsPageSate extends State<ItemsPage> {
       image = item.images[0].url;
     }
     return GestureDetector(
-        onTap: () => _openUrl(item.url),
+        onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) =>
+              ForwardPage(url: item.url)));
+        },
         child:
         Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,15 +115,6 @@ class _ItemsPageSate extends State<ItemsPage> {
             ]
         )
     );
-  }
-
-  _openUrl(String url) async {
-
-    add page with progress and text "opening url", after wait complete, pop page
-
-    if (await canLaunch(url)) {
-      await launch(url);
-    }
   }
 
   _buildLoadingView() {

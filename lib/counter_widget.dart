@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:allegro_observer/model/filter.dart';
 import 'package:allegro_observer/allegro/allegro_search.dart';
+import 'package:allegro_observer/repository/repository.dart';
 
 class CounterWidget extends StatefulWidget {
   final Filter filter;
@@ -16,6 +17,7 @@ class CounterWidget extends StatefulWidget {
 class _CounterWidgetState extends State<CounterWidget> {
 
   final mediumScale = 0.8;
+  var repository = Repository();
 
   @override
   void initState() {
@@ -27,8 +29,11 @@ class _CounterWidgetState extends State<CounterWidget> {
     var allegroSearch = AllegroSearch();
     var result = await allegroSearch.search(widget.filter);
 
+    await repository.open();
+    var newCount = await repository.addItems(result.items);
+    await repository.close();
     setState(() {
-      widget.count = result.items.regular.length + result.items.promoted.length;
+      widget.count = newCount;
       widget.isOverflow = result.isOverflow();
     });
   }
