@@ -36,7 +36,8 @@ class AllegroSearch {
       var wrapper = ListingWrapper.fromJson(jsonMap);
 
       if (onlyNew) {
-        var newIds = await _fetchNewIds();
+        print("clear ---------");
+        var newIds = await _fetchNewIds(filter.id);
         wrapper.items.promoted.removeWhere((item) => !newIds.contains(item.id));
         wrapper.items.regular.removeWhere((item) => !newIds.contains(item.id));
       }
@@ -47,10 +48,10 @@ class AllegroSearch {
     }
   }
 
-  Future<List<String>> _fetchNewIds() async {
+  Future<List<String>> _fetchNewIds(int filterId) async {
     var repository = Repository();
     await repository.open();
-    var newIds = await repository.fetchNewItemIds();
+    var newIds = await repository.fetchNewItemIds(filterId);
     await repository.clearIsNew(newIds);
     await repository.close();
     return newIds;

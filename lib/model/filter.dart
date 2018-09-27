@@ -3,7 +3,7 @@ import 'package:allegro_observer/allegro/allegro_base.dart';
 
 class Filter {
 
-  String id;
+  int id;
   String keyword;
   double priceFrom;
   double priceTo;
@@ -36,7 +36,7 @@ class Filter {
   }
 
   Filter.fromMap(Map<String, dynamic> map) {
-    id = map["id"];
+    id = map["_id"];
     keyword = map["keyword"];
     priceFrom = map["priceFrom"];
     priceTo = map["priceTo"];

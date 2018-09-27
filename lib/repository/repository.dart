@@ -6,17 +6,19 @@ import 'package:allegro_observer/allegro/model/items_wrapper.dart';
 class Repository {
   final dbName = 'allegro-observer.db';
 
+  static int _openCount = 0;
   DatabaseProvider _provider;
 
-  Future<int> addItems(ItemsWrapper itemsWrappwer) async {
+  Future<int> addItems(int filterId, ItemsWrapper itemsWrappwer) async {
     var addedCount = 0;
-    addedCount += await _provider.addItems(itemsWrappwer.promoted);
-    addedCount += await _provider.addItems(itemsWrappwer.regular);
+    addedCount += await _provider.addItems(filterId, itemsWrappwer.promoted);
+    addedCount += await _provider.addItems(filterId, itemsWrappwer.regular);
+    addedCount += (await _provider.fetchNewItemIds(filterId)).length;
     return addedCount;
   }
 
-  Future<List<String>> fetchNewItemIds() async {
-    return await _provider.fetchNewItemIds();
+  Future<List<String>> fetchNewItemIds(int filterId) async {
+    return await _provider.fetchNewItemIds(filterId);
   }
 
   Future clearIsNew(List<String> newIds) async {
@@ -34,9 +36,19 @@ class Repository {
   }
 
   Future open() async {
+    _openCount++;
     _provider = DatabaseProvider();
     await _provider.open(dbName);
+    print("open $_openCount");
   }
 
-  Future close() async => await _provider.close();
+  Future close() async {
+    _openCount--;
+    if (_openCount > 0) {
+      print("block close");
+      return;
+    }
+    await _provider.close();
+    print("close $_openCount");
+  }
 }

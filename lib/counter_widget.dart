@@ -16,8 +16,8 @@ class CounterWidget extends StatefulWidget {
 
 class _CounterWidgetState extends State<CounterWidget> {
 
-  final mediumScale = 0.8;
   var repository = Repository();
+  final mediumScale = 0.8;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _CounterWidgetState extends State<CounterWidget> {
     var result = await allegroSearch.search(widget.filter);
 
     await repository.open();
-    var newCount = await repository.addItems(result.items);
+    var newCount = await repository.addItems(widget.filter.id, result.items);
     await repository.close();
     setState(() {
       widget.count = newCount;

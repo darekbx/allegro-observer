@@ -25,29 +25,36 @@ class DatabaseProvider {
 
   Future close() async => await _db.close();
 
-  Future<int> addItems(List<Item> items) async {
+  Future<int> addItems(int filterId, List<Item> items) async {
     var addedCount = 0;
-    var ids = await fetchItemIds();
+    var ids = await fetchItemIds(filterId);
     for (Item item in items) {
       if (ids.contains(item.id)) {
         continue;
       }
-      await _db.insert(_itemTableName, item.toMap());
+      Map<String, dynamic> itemMap = item.toMap();
+      itemMap["filterId"] = filterId;
+      await _db.insert(_itemTableName, itemMap);
       addedCount++;
     }
     return addedCount;
   }
 
-  Future<List<String>> fetchItemIds() async {
-    List<Map> maps = await _db.query(_itemTableName);
+  Future<List<String>> fetchItemIds(int filterId) async {
+    List<Map> maps = await _db.query(
+        _itemTableName,
+        where: "filterId = ?",
+        whereArgs: [filterId]);
     return maps.map((map) {
       var value = map["allegroId"].toString();
       return value;
     }).toList();
   }
 
-  Future<List<String>> fetchNewItemIds() async {
-    List<Map> maps = await _db.query(_itemTableName, where: "isNew = 1");
+  Future<List<String>> fetchNewItemIds(int filterId) async {
+    List<Map> maps = await _db.query(_itemTableName,
+        where: "filterId = ? AND isNew = ?",
+        whereArgs: [filterId, 1]);
     return maps.map((map) {
       var value = map["allegroId"].toString();
       return value;
@@ -57,7 +64,7 @@ class DatabaseProvider {
   Future clearIsNew(List<String> newIds) async {
     for (String id in newIds) {
       await _db.update(_itemTableName,
-          { "isNew": 0},
+          {"isNew": 0},
           where: "allegroId = ?",
           whereArgs: [id]);
     }
@@ -94,7 +101,8 @@ class DatabaseProvider {
       CREATE TABLE $_itemTableName (
         _id INTEGER PRIMARY KEY AUTOINCREMENT,
         allegroId TEXT NULL,
-        isNew INTEGER DEFAULT 0
+        isNew INTEGER DEFAULT 0,
+        filterId INTEGER
       )
     ''');
   }
