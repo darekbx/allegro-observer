@@ -11,9 +11,14 @@ class Repository {
 
   Future<int> addItems(int filterId, ItemsWrapper itemsWrappwer) async {
     var addedCount = 0;
-    addedCount += await _provider.addItems(filterId, itemsWrappwer.promoted);
-    addedCount += await _provider.addItems(filterId, itemsWrappwer.regular);
+    await _provider.addItems(filterId, itemsWrappwer.promoted);
+    await _provider.addItems(filterId, itemsWrappwer.regular);
     addedCount += (await _provider.fetchNewItemIds(filterId)).length;
+
+    if (addedCount == 0) {
+      addedCount = -(await _provider.fetchItemIds(filterId)).length;
+    }
+
     return addedCount;
   }
 
@@ -39,16 +44,13 @@ class Repository {
     _openCount++;
     _provider = DatabaseProvider();
     await _provider.open(dbName);
-    print("open $_openCount");
   }
 
   Future close() async {
     _openCount--;
     if (_openCount > 0) {
-      print("block close");
       return;
     }
     await _provider.close();
-    print("close $_openCount");
   }
 }

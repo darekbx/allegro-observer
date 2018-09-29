@@ -36,10 +36,11 @@ class AllegroSearch {
       var wrapper = ListingWrapper.fromJson(jsonMap);
 
       if (onlyNew) {
-        print("clear ---------");
         var newIds = await _fetchNewIds(filter.id);
-        wrapper.items.promoted.removeWhere((item) => !newIds.contains(item.id));
-        wrapper.items.regular.removeWhere((item) => !newIds.contains(item.id));
+        if (newIds.isNotEmpty) {
+          wrapper.items.promoted.removeWhere((item) => !newIds.contains(item.id));
+          wrapper.items.regular.removeWhere((item) => !newIds.contains(item.id));
+        }
       }
 
       return wrapper;
@@ -52,7 +53,9 @@ class AllegroSearch {
     var repository = Repository();
     await repository.open();
     var newIds = await repository.fetchNewItemIds(filterId);
-    await repository.clearIsNew(newIds);
+    if (newIds.length > 0) {
+      await repository.clearIsNew(newIds);
+    }
     await repository.close();
     return newIds;
   }

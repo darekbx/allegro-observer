@@ -42,21 +42,31 @@ class _CounterWidgetState extends State<CounterWidget> {
   Widget build(BuildContext context) {
     if (widget.count == null) {
       return _buildLoadingView();
-    } else if (widget.count == 0) {
-      return Container();
+    }
+    Color bgColor;
+    Color fontColor;
+    if (widget.isOverflow) {
+      bgColor = Colors.red;
+      fontColor = Colors.white;
+    } else {
+      bgColor = widget.count < 0 ? Colors.transparent : Colors.blue;
+      fontColor = widget.count < 0 ? Colors.black : Colors.white;
+    }
+    if (widget.count < 0) {
+      widget.count = -widget.count;
     }
     return Container(
       child: Text(
           "${widget.count}",
           textScaleFactor: mediumScale,
           style: TextStyle(
-              color: Colors.white,
+              color: fontColor,
               fontWeight: FontWeight.bold
           )
       ),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          color: widget.isOverflow ? Colors.red : Colors.blue
+          color: bgColor
       ),
       padding: EdgeInsets.all(4.0),
     );
