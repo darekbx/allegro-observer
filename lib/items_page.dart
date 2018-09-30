@@ -57,7 +57,7 @@ class _ItemsPageSate extends State<ItemsPage> {
         return Column(
           children: <Widget>[
             ListTile(
-              title: _buildListItem(context, items[index]),
+              title: _buildListItem(context, items[index], index),
             ),
             Divider(height: 2.0),
           ],
@@ -66,7 +66,7 @@ class _ItemsPageSate extends State<ItemsPage> {
     );
   }
 
-  _buildListItem(BuildContext context, Item item) {
+  _buildListItem(BuildContext context, Item item, int index) {
     String image = "";
     if (item.images != null && item.images.length > 0) {
       image = item.images[0].url;
@@ -106,10 +106,16 @@ class _ItemsPageSate extends State<ItemsPage> {
                           overflow: TextOverflow.ellipsis
                       ),
                       Padding(padding: EdgeInsets.only(top: 38.0)),
-                      Text(
-                          "[${item.id}]",
-                          style: TextStyle(fontSize: 12.0))
-
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                                "[${item.id}]",
+                                style: TextStyle(fontSize: 12.0)),
+                            Text(
+                                "${index+1}.",
+                                style: TextStyle(fontSize: 12.0))
+                          ])
                     ],
                   ))
             ]
