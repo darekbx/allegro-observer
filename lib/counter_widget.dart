@@ -28,7 +28,6 @@ class _CounterWidgetState extends State<CounterWidget> {
   _update() async {
     var allegroSearch = AllegroSearch();
     var result = await allegroSearch.search(widget.filter);
-
     await repository.open();
     var newCount = await repository.addItems(widget.filter.id, result.items);
     await repository.close();

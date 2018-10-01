@@ -108,6 +108,9 @@ class _FiltersPageState extends State<FiltersPage> {
                   ItemsPage(filter: filter))
           );
         },
+        onLongPress: () {
+          deleteDialog(context, filter);
+        },
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -138,6 +141,39 @@ class _FiltersPageState extends State<FiltersPage> {
               _buildCounter(filter)
             ])
     );
+  }
+
+  void deleteDialog(BuildContext context, Filter filter) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Delete"),
+            content: Text("Delete filter?"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Cancel"),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              FlatButton(
+                child: Text("Confirm"),
+                onPressed: () {
+                  _deleteFilter(filter);
+                  Navigator.of(context).pop();
+                }
+              )
+            ],
+          );
+        }
+    );
+  }
+
+  void _deleteFilter(Filter filter) async {
+    var repository = Repository();
+    await repository.open();
+    await repository.deleteFilter(filter.id);
+    await repository.close();
+    _refreshList();
   }
 
   Widget _buildCounter(Filter filter) {

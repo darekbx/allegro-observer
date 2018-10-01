@@ -12,7 +12,7 @@ class DatabaseProvider {
   Database _db;
 
   Future open(String dbName) async {
-    Sqflite.devSetDebugModeOn(true);
+    //Sqflite.devSetDebugModeOn(true);
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, dbName);
     _db = await openDatabase(
@@ -24,6 +24,11 @@ class DatabaseProvider {
   }
 
   Future close() async => await _db.close();
+
+  Future deleteFilter(int filterId) async {
+    await _db.delete(_filterTableName, where: "_id = ?", whereArgs: [filterId]);
+    await _db.delete(_itemTableName, where: "filterId = ?", whereArgs: [filterId]);
+  }
 
   Future<int> addItems(int filterId, List<Item> items) async {
     var addedCount = 0;

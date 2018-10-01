@@ -10,10 +10,9 @@ class Repository {
   DatabaseProvider _provider;
 
   Future<int> addItems(int filterId, ItemsWrapper itemsWrappwer) async {
-    var addedCount = 0;
     await _provider.addItems(filterId, itemsWrappwer.promoted);
     await _provider.addItems(filterId, itemsWrappwer.regular);
-    addedCount += (await _provider.fetchNewItemIds(filterId)).length;
+    var addedCount = (await _provider.fetchNewItemIds(filterId)).length;
 
     if (addedCount == 0) {
       addedCount = -(await _provider.fetchItemIds(filterId)).length;
@@ -21,6 +20,8 @@ class Repository {
 
     return addedCount;
   }
+
+  Future deleteFilter(int filterId) async => _provider.deleteFilter(filterId);
 
   Future<List<String>> fetchNewItemIds(int filterId) async {
     return await _provider.fetchNewItemIds(filterId);

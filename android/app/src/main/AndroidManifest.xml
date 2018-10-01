@@ -15,7 +15,7 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="allegro_observer"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/magnifier_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
