@@ -17,25 +17,19 @@ class _FiltersPageState extends State<FiltersPage> {
   final mediumScale = 0.8;
   final smallScale = 0.7;
 
-  List<Filter> _filters;
+  Repository repository;
+  Future<List<Filter>> _filtersFuture;
 
   void _openCreateFilter(BuildContext context) async {
     var filter = await Navigator.pushNamed(context, '/create_filter');
     if (filter != null) {
-      var repository = Repository();
-      await repository.open();
       await repository.addFilter(filter);
-      await repository.close();
-      _refreshList();
+      _filtersFuture = repository.fetchFilters();
     }
   }
 
-  void _refreshList() {
-    setState(() {
-      if (_filters != null) {
-        _filters.clear();
-      }
-    });
+  void _menuOptionSelected(int index) {
+    print("menu $index");
   }
 
   @override
@@ -43,9 +37,20 @@ class _FiltersPageState extends State<FiltersPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Allegro Observer"),
+        actions: <Widget>[
+          PopupMenuButton<int>(
+            onSelected: _menuOptionSelected,
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuEntry<int>>[
+                PopupMenuItem(child: Text("Export"), value: 1),
+                PopupMenuItem(child: Text("Import"), value: 2)
+              ];
+            },
+          ),
+        ],
       ),
       body: FutureBuilder(
-        future: _buildFiltersListFuture(),
+        future: _filtersFuture = _loadFilters(),
         builder: (BuildContext context, AsyncSnapshot<List<Filter>> snapshot) {
           return _handleFuture(context, snapshot);
         },
@@ -60,12 +65,12 @@ class _FiltersPageState extends State<FiltersPage> {
     );
   }
 
-  Future<List<Filter>> _buildFiltersListFuture() async {
-    var repository = Repository();
-    await repository.open();
-    var list = await repository.fetchFilters();
-    await repository.close();
-    return list;
+  Future<List<Filter>> _loadFilters() async {
+    if (repository == null) {
+      repository = Repository();
+      await repository.open();
+    }
+    return repository.fetchFilters();
   }
 
   Widget _handleFuture(BuildContext context,
@@ -78,7 +83,6 @@ class _FiltersPageState extends State<FiltersPage> {
         if (snapshot.data == null || snapshot.data.isEmpty) {
           return _buildEmptyView();
         } else {
-          this._filters = snapshot.data;
           return _buildFiltersList(context, snapshot.data);
         }
     }
@@ -156,11 +160,14 @@ class _FiltersPageState extends State<FiltersPage> {
                 onPressed: () => Navigator.of(context).pop(),
               ),
               FlatButton(
-                child: Text("Confirm"),
-                onPressed: () {
-                  _deleteFilter(filter);
-                  Navigator.of(context).pop();
-                }
+                  child: Text("Confirm"),
+                  onPressed: () {
+                    _deleteFilter(filter);
+                    Navigator.of(context).pop();
+                    setState(() {
+                      _filtersFuture = _loadFilters();
+                    });
+                  }
               )
             ],
           );
@@ -169,11 +176,8 @@ class _FiltersPageState extends State<FiltersPage> {
   }
 
   void _deleteFilter(Filter filter) async {
-    var repository = Repository();
-    await repository.open();
     await repository.deleteFilter(filter.id);
-    await repository.close();
-    _refreshList();
+    _filtersFuture = repository.fetchFilters();
   }
 
   Widget _buildCounter(Filter filter) {
