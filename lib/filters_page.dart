@@ -70,6 +70,12 @@ class _FiltersPageState extends State<FiltersPage> {
       repository = Repository();
       await repository.open();
     }
+
+    //var c = await repository.countRemoteFilters();
+    //var l = await repository.importFilters();
+    //print("Couunt ${l.length}");
+    //l.forEach((f) => print("Remote ${f.toString()}"));
+
     return repository.fetchFilters();
   }
 

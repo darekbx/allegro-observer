@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:allegro_observer/repository/local/database_provider.dart';
+import 'package:allegro_observer/repository/remote/firebase_provider.dart';
 import 'package:allegro_observer/model/filter.dart';
 import 'package:allegro_observer/allegro/model/items_wrapper.dart';
 
@@ -39,6 +40,24 @@ class Repository {
   Future<List<Filter>> fetchFilters() async {
     var filters = await _provider.fetchFilters();
     return filters;
+  }
+
+  Future exportToFirebase() async {
+    var firebaseProvider = FirebaseProvider();
+    var filters = await _provider.fetchFilters();
+    for (var filter in filters) {
+      await firebaseProvider.add(filter);
+    }
+  }
+
+  Future<int> countRemoteFilters() async {
+    var firebaseProvider = FirebaseProvider();
+    return firebaseProvider.countFilters();
+  }
+
+  Future<List<Filter>> importFilters() async {
+    var firebaseProvider = FirebaseProvider();
+    return await firebaseProvider.fetchFilters();
   }
 
   Future open() async {

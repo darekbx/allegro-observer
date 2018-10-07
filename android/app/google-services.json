@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "770347444689",
+    "firebase_url": "https://allegro-watcher.firebaseio.com",
+    "project_id": "allegro-watcher",
+    "storage_bucket": "allegro-watcher.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770347444689:android:4666a10c60a6786f",
+        "android_client_info": {
+          "package_name": "com.allegroobserver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "770347444689-md0l6v7pr8qh25sk0ouslvn51knm4tmd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlaypunO6tjG3rL6f1o_MzfzmRp6HwNlI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
