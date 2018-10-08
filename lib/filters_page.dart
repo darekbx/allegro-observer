@@ -28,8 +28,21 @@ class _FiltersPageState extends State<FiltersPage> {
     }
   }
 
-  void _menuOptionSelected(int index) {
-    print("menu $index");
+  void _menuOptionSelected(BuildContext context, int index) async {
+    switch (index) {
+      case 1:
+        _progressDialog(context, "Exporting filters...");
+        await repository.exportToFirebase();
+        break;
+      case 2:
+        _progressDialog(context, "Importing filters...");
+        await repository.importFilters();
+        setState(() {
+          _filtersFuture = _loadFilters();
+        });
+        break;
+    }
+    Navigator.pop(context);
   }
 
   @override
@@ -39,7 +52,7 @@ class _FiltersPageState extends State<FiltersPage> {
         title: Text("Allegro Observer"),
         actions: <Widget>[
           PopupMenuButton<int>(
-            onSelected: _menuOptionSelected,
+            onSelected: (index) => _menuOptionSelected(context, index),
             itemBuilder: (BuildContext context) {
               return <PopupMenuEntry<int>>[
                 PopupMenuItem(child: Text("Export"), value: 1),
@@ -70,12 +83,6 @@ class _FiltersPageState extends State<FiltersPage> {
       repository = Repository();
       await repository.open();
     }
-
-    //var c = await repository.countRemoteFilters();
-    //var l = await repository.importFilters();
-    //print("Couunt ${l.length}");
-    //l.forEach((f) => print("Remote ${f.toString()}"));
-
     return repository.fetchFilters();
   }
 
@@ -151,6 +158,23 @@ class _FiltersPageState extends State<FiltersPage> {
               _buildCounter(filter)
             ])
     );
+  }
+
+  void _progressDialog(BuildContext context, String message) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(message),
+            content: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[CircularProgressIndicator()]
+            )
+          );
+        }
+    );
+
   }
 
   void deleteDialog(BuildContext context, Filter filter) {

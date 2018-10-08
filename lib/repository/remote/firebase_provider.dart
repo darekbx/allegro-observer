@@ -6,10 +6,19 @@ class FirebaseProvider {
 
   var _COLLECTION_KEY = "filters";
 
-  Future add(Filter filter) async {
-    await Firestore.instance.collection(_COLLECTION_KEY)
-        .document()
-        .setData(filter.toMap());
+  Future addAll(List<Filter> filters) async {
+    var collection = await Firestore.instance.collection(_COLLECTION_KEY);
+    for (var filter in filters) {
+      await collection.add(filter.toMap());
+    }
+  }
+
+  Future removeAll() async {
+    var documentsFuture = await Firestore.instance.collection(_COLLECTION_KEY)
+        .getDocuments();
+    for (var document in documentsFuture.documents) {
+      document.reference.delete();
+    }
   }
 
   Future<int> countFilters() async {

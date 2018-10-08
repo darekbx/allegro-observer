@@ -25,6 +25,10 @@ class DatabaseProvider {
 
   Future close() async => await _db.close();
 
+  Future deleteAll() async {
+    await _db.delete(_filterTableName);
+  }
+
   Future deleteFilter(int filterId) async {
     await _db.delete(_filterTableName, where: "_id = ?", whereArgs: [filterId]);
     await _db.delete(_itemTableName, where: "filterId = ?", whereArgs: [filterId]);

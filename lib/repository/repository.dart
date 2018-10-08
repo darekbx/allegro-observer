@@ -44,10 +44,9 @@ class Repository {
 
   Future exportToFirebase() async {
     var firebaseProvider = FirebaseProvider();
+    await firebaseProvider.removeAll();
     var filters = await _provider.fetchFilters();
-    for (var filter in filters) {
-      await firebaseProvider.add(filter);
-    }
+    await firebaseProvider.addAll(filters);
   }
 
   Future<int> countRemoteFilters() async {
@@ -55,9 +54,13 @@ class Repository {
     return firebaseProvider.countFilters();
   }
 
-  Future<List<Filter>> importFilters() async {
+  Future importFilters() async {
+    await _provider.deleteAll();
     var firebaseProvider = FirebaseProvider();
-    return await firebaseProvider.fetchFilters();
+    var filters = await firebaseProvider.fetchFilters();
+    for (var filter in filters) {
+      await addFilter(filter);
+    }
   }
 
   Future open() async {
