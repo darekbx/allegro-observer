@@ -37,6 +37,7 @@ class _FiltersPageState extends State<FiltersPage> {
       case 2:
         _progressDialog(context, "Importing filters...");
         await repository.importFilters();
+        await Future.delayed(Duration(seconds: 1));
         setState(() {
           _filtersFuture = _loadFilters();
         });

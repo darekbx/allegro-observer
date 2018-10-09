@@ -59,7 +59,7 @@ class Repository {
     var firebaseProvider = FirebaseProvider();
     var filters = await firebaseProvider.fetchFilters();
     for (var filter in filters) {
-      await addFilter(filter);
+      await _provider.addFilter(filter);
     }
   }
 
