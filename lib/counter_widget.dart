@@ -48,8 +48,8 @@ class _CounterWidgetState extends State<CounterWidget> {
       bgColor = Colors.red;
       fontColor = Colors.white;
     } else {
-      bgColor = widget.count < 0 ? Colors.transparent : Colors.blue;
-      fontColor = widget.count < 0 ? Colors.black : Colors.white;
+      bgColor = widget.count <= 0 ? Colors.transparent : Colors.blue;
+      fontColor = widget.count <= 0 ? Colors.black : Colors.white;
     }
     if (widget.count < 0) {
       widget.count = -widget.count;

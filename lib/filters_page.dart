@@ -84,6 +84,7 @@ class _FiltersPageState extends State<FiltersPage> {
       repository = Repository();
       await repository.open();
     }
+    await Future.delayed(Duration(milliseconds: 200));
     return repository.fetchFilters();
   }
 
