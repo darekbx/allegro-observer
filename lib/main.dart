@@ -5,6 +5,7 @@ import 'package:allegro_observer/category_choose_page.dart';
 import 'package:allegro_observer/webview_page.dart';
 import 'package:allegro_observer/items_page.dart';
 import 'package:allegro_observer/forward_page.dart';
+import 'package:allegro_observer/settings_page.dart';
 
 void main() => runApp(new AllegroObserverApp());
 
@@ -24,7 +25,8 @@ class AllegroObserverApp extends StatelessWidget {
         '/category_choose': (context) => CategoryChoosePage(),
         '/web_view': (context) => WebViewPage(),
         '/items': (context) => ItemsPage(),
-        '/forward': (context) => ForwardPage()
+        '/forward': (context) => ForwardPage(),
+        '/settings': (context) => SettingsPage()
       },
     );
   }
