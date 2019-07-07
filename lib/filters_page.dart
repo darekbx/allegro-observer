@@ -52,6 +52,12 @@ class _FiltersPageState extends State<FiltersPage> {
       appBar: AppBar(
         title: Text("Allegro Observer"),
         actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () {
+                
+              },
+            ),
           PopupMenuButton<int>(
             onSelected: (index) => _menuOptionSelected(context, index),
             itemBuilder: (BuildContext context) {
