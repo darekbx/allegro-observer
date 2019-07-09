@@ -1,22 +1,28 @@
 import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Authenticator {
 
-  final _clientId = "c878432370b44ea0b84a1ca8b294894e";
-  final _redirectUrl = "http://google.pl";
-  final _redirectUrlTemplate = "https://www.google.pl/?code=";
-  final _redirectUrlSuffix = "&gws_rd=ssl";
+  Authenticator(this.clientId, this.clientSecret);
 
-  String getAuthUrl() =>
-      "https://allegro.pl/auth/oauth/authorize?response_type=code&client_id=${_clientId}&redirect_uri=${_redirectUrl}";
+  final String clientId;
+  final String clientSecret;
 
-  String extractCode(String url) {
-    if (url.startsWith(_redirectUrlTemplate)) {
-      String code = url.substring(_redirectUrlTemplate.length);
-      print("A: $code");
-      var endIndex = code.length - _redirectUrlSuffix.length;
-      return code.substring(0, endIndex);;
+  final _authUrl = "https://allegro.pl/auth/oauth/device";
+
+  Future<String> getAuthUrl() async {
+    var basicToken = base64Encode(utf8.encode("$clientId:$clientSecret"));
+    var headers =  { 
+      "Authorization": "Basic $basicToken",
+      "Content-Type": "application/x-www-form-urlencoded" 
+    };
+    var response = await http.post(_authUrl, headers: headers, body: "client_id=$clientId");
+    var jsonMap = json.decode(response.body);
+    if (jsonMap["error"] != null) {
+      return jsonMap;
+    } else {
+      return jsonMap["verification_uri_complete"];
     }
-    return null;
   }
 }
