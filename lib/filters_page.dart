@@ -4,6 +4,7 @@ import 'package:allegro_observer/repository/repository.dart';
 import 'package:allegro_observer/model/filter.dart';
 import 'package:allegro_observer/counter_widget.dart';
 import 'package:allegro_observer/items_page.dart';
+import 'package:allegro_observer/settings_page.dart';
 
 class FiltersPage extends StatefulWidget {
   FiltersPage({Key key}) : super(key: key);
@@ -55,7 +56,9 @@ class _FiltersPageState extends State<FiltersPage> {
           IconButton(
               icon: Icon(Icons.settings),
               onPressed: () {
-                
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingsPage())
+                );
               },
             ),
           PopupMenuButton<int>(

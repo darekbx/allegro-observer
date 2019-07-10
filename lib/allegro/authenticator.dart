@@ -11,7 +11,7 @@ class Authenticator {
 
   final _authUrl = "https://allegro.pl/auth/oauth/device";
 
-  Future<String> getAuthUrl() async {
+  Future<String> getVerificationUrl() async {
     var basicToken = base64Encode(utf8.encode("$clientId:$clientSecret"));
     var headers =  { 
       "Authorization": "Basic $basicToken",

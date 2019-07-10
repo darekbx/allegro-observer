@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:allegro_observer/repository/local/local_storage.dart';
+import 'package:allegro_observer/allegro/authenticator.dart'
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   SettingsPage();
@@ -61,8 +63,24 @@ class _SettingsState extends State<SettingsPage> {
                   controller: _clientSecretInputController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(hintText: "Client Secret"),
-                )
+                ),
+                FlatButton(child: Text("Authorize"), onPressed: () => _authorize(context)),
               ],
             )));
+  }
+
+  void _authorize(BuildContext context) async {
+    var authenticator = Authenticator(_clientIdInputController.text, _clientSecretInputController.text);
+    var verificationUrl = await authenticator.getVerificationUrl();
+
+    _openUrl(context, verificationUrl);
+  }
+
+  _openUrl(BuildContext context, String url) async {
+    await Future.delayed(Duration(seconds: 1));
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
+    Navigator.pop(context);
   }
 }
