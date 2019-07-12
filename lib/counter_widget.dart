@@ -22,7 +22,9 @@ class _CounterWidgetState extends State<CounterWidget> {
   @override
   void initState() {
     super.initState();
-    _update();
+    if (this.mounted) {
+      _update();
+    }
   }
 
   _update() async {
