@@ -86,7 +86,6 @@ class DatabaseProvider {
 
   Future<List<Filter>> fetchFilters() async {
     List<Map> maps = await _db.query(_filterTableName);
-    print(maps);
     if (maps.length > 0) {
       return maps.map((map) => Filter.fromMap(map)).toList();
     }

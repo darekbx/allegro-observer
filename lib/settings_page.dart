@@ -25,14 +25,14 @@ class _SettingsState extends State<SettingsPage> {
     super.initState();
     if (this.mounted) {
       _loadData();
-      _clientIdFocusNode.addListener(() { 
+      _clientIdFocusNode.addListener(() {
         setState(() {
           _clientIdValidation = _clientIdInputController.text.isEmpty;
         });
       });
       _clientSecretFocusNode.addListener(() {
         setState(() {
-          _clientSecretValidation =_clientSecretInputController.text.isEmpty;
+          _clientSecretValidation = _clientSecretInputController.text.isEmpty;
         });
       });
       _clientIdInputController.addListener(() {
@@ -64,62 +64,79 @@ class _SettingsState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("Settings")),
-        body: Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                    child: Text("Enter your Client Id"),
-                    padding: EdgeInsets.only(top: 4)),
-                showClientIdInput(),
-                Padding(
-                    child: Text("Enter your Client Secret"),
-                    padding: EdgeInsets.only(top: 24)),
-                showClientSecretInput(),
-                Padding(
-                    child: RaisedButton(
-                        child: Text("Authorize"),
-                        onPressed: () => _authorize(context)),
-                    padding: EdgeInsets.only(top: 24)),
-              ],
-            )));
+        body: Builder(
+            builder: (scaffoldContext) => Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                        child: Text("Enter your Client Id"),
+                        padding: EdgeInsets.only(top: 4)),
+                    showClientIdInput(),
+                    Padding(
+                        child: Text("Enter your Client Secret"),
+                        padding: EdgeInsets.only(top: 24)),
+                    showClientSecretInput(),
+                    Padding(
+                        child: RaisedButton(
+                            child: Text("Authorize"),
+                            onPressed: () => _authorize()),
+                        padding: EdgeInsets.only(top: 24)),
+                    Padding(
+                        child: RaisedButton(
+                            child: Text("Get Token"),
+                            onPressed: () => _getToken(scaffoldContext)),
+                        padding: EdgeInsets.only(top: 8)),
+                  ],
+                ))));
   }
 
   Widget showClientIdInput() {
     var decoration;
     if (_clientIdValidation) {
-      decoration = InputDecoration(hintText: "Client Id", errorText: "Value should not be empty");
+      decoration = InputDecoration(
+          hintText: "Client Id", errorText: "Value should not be empty");
     } else {
       decoration = InputDecoration(hintText: "Client Id");
     }
     return TextField(
-                  controller: _clientIdInputController,
-                  keyboardType: TextInputType.text,
-                  decoration: decoration,
-                  focusNode: _clientIdFocusNode,
-                );
+      controller: _clientIdInputController,
+      keyboardType: TextInputType.text,
+      decoration: decoration,
+      focusNode: _clientIdFocusNode,
+    );
   }
 
   Widget showClientSecretInput() {
     var decoration;
     if (_clientSecretValidation) {
-      decoration = InputDecoration(hintText: "Client Secret", errorText: "Value should not be empty");
+      decoration = InputDecoration(
+          hintText: "Client Secret", errorText: "Value should not be empty");
     } else {
       decoration = InputDecoration(hintText: "Client Secret");
     }
     return TextField(
-                  controller: _clientSecretInputController,
-                  keyboardType: TextInputType.text,
-                  decoration: decoration,
-                  focusNode: _clientSecretFocusNode,
-                );
+      controller: _clientSecretInputController,
+      keyboardType: TextInputType.text,
+      decoration: decoration,
+      focusNode: _clientSecretFocusNode,
+    );
   }
-  void _authorize(BuildContext context) async {
+
+  void _getToken(BuildContext context) async {
+    var authenticator = Authenticator(
+        _clientIdInputController.text, _clientSecretInputController.text);
+    var token = await authenticator.getToken();
+    _localStorage.setAuthToken(token);
+
+    Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Token saved.')));
+  }
+
+  void _authorize() async {
     if (_clientIdInputController.text.isEmpty ||
         _clientSecretInputController.text.isEmpty) {
-      Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('ClientId and ClientSecret should be not empty.')));
       return;
     }
 
