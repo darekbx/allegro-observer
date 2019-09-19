@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:allegro_observer/repository/local/local_storage.dart';
-import 'package:allegro_observer/allegro/authenticator.dart'
+import 'package:allegro_observer/allegro/authenticator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
