@@ -22,7 +22,9 @@ class _CounterWidgetState extends State<CounterWidget> {
   @override
   void initState() {
     super.initState();
-    _update();
+    if (this.mounted) {
+      _update();
+    }
   }
 
   _update() async {
@@ -31,10 +33,12 @@ class _CounterWidgetState extends State<CounterWidget> {
     await repository.open();
     var newCount = await repository.addItems(widget.filter.id, result.items);
     await repository.close();
-    setState(() {
-      widget.count = newCount;
-      widget.isOverflow = result.isOverflow();
-    });
+    if (this.mounted) {
+      setState(() {
+        widget.count = newCount;
+        widget.isOverflow = result.isOverflow();
+      });
+    }
   }
 
   @override
