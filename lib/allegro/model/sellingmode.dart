@@ -34,7 +34,7 @@ class Price {
   Price(this.amount, this.currency);
 
   Price.fromJson(Map<String, dynamic> json)
-      : amount = (json['amount'] as num).toString(),
+      : amount = json['amount'] + "",
         currency = json['currency'];
 
   @override
