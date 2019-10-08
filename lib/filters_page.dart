@@ -139,8 +139,9 @@ class _FiltersPageState extends State<FiltersPage> {
         onLongPress: () {
           deleteDialog(context, filter);
         },
-        child: Row(
+        child: Padding(padding: EdgeInsets.all(8),child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
             children: <Widget>[
               Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +152,6 @@ class _FiltersPageState extends State<FiltersPage> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                           textScaleFactor: mediumScale,
                         ),
-                        Padding(padding: EdgeInsets.all(2.0)),
                         _buildKeyword(filter),
                         _buildCheckboxes(filter)
                       ],
@@ -167,7 +167,7 @@ class _FiltersPageState extends State<FiltersPage> {
                   ]
               ),
               _buildCounter(filter)
-            ])
+            ]))
     );
   }
 

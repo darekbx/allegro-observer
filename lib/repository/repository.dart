@@ -14,11 +14,9 @@ class Repository {
     await _provider.addItems(filterId, itemsWrappwer.promoted);
     await _provider.addItems(filterId, itemsWrappwer.regular);
     var addedCount = (await _provider.fetchNewItemIds(filterId)).length;
-
     if (addedCount == 0) {
-      addedCount = -(await _provider.fetchItemIds(filterId)).length;
+      addedCount = -(itemsWrappwer.promoted.length + itemsWrappwer.regular.length);
     }
-
     return addedCount;
   }
 
