@@ -36,9 +36,12 @@ class Item {
   String priceFormatted() {
     if (sellingMode.auction != null) {
       return sellingMode.auction.price.toString();
-    }
-    else {
+    } else if (sellingMode.buyNow != null && sellingMode.buyNow.price != null) {
       return sellingMode.buyNow.price.toString();
+    } else if (sellingMode.advertisement != null && sellingMode.advertisement.price != null) {
+      return sellingMode.advertisement.price.toString();
+    } else {
+      return "unknown";
     }
   }
 }

@@ -3,8 +3,9 @@ class SellingMode {
 
   SellingModeItem buyNow;
   SellingModeItem auction;
+  SellingModeItem advertisement;
 
-  SellingMode(this.buyNow, this.auction);
+  SellingMode(this.buyNow, this.auction, this.advertisement);
 
   SellingMode.fromJson(Map<String, dynamic> json) {
     if (json.containsKey("buyNow")) {
@@ -12,6 +13,9 @@ class SellingMode {
     }
     if (json.containsKey("auction")) {
       this.auction = SellingModeItem.fromJson(json["auction"]);
+    }
+    if (json.containsKey("advertisement")) {
+      this.advertisement = SellingModeItem.fromJson(json["advertisement"]);
     }
   }
 }
