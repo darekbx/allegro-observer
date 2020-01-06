@@ -13,7 +13,8 @@ dependencies:
   flutter_webview_plugin: ^0.2.1+2
   shared_preferences: ^0.4.2
   url_launcher: ^3.0.3
-  cloud_firestore: ^0.8.1
+  firebase_core: ^0.4.0+9
+  cloud_firestore: ^0.12.9+5
   http: any
 
 dev_dependencies:
